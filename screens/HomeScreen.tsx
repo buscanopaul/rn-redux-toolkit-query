@@ -9,13 +9,25 @@ import {
   TouchableOpacity,
   View,
 } from 'react-native';
+import { useDispatch, useSelector } from 'react-redux';
 import { productApi } from '../redux/api';
+import { setOnBoard } from '../redux/onBoardSlice';
+import { setUserIsLogin } from '../redux/userSlice';
 import { Data } from '../typings';
 
 type Props = {};
 
 const HomeScreen = (props: Props) => {
-  const { data: products } = productApi.useGetAllQuery();
+  const onBoard = useSelector((state: any) => state.onboard.isOnBoard);
+  const user = useSelector((state: any) => state.user.isLogin);
+  const dispatch = useDispatch();
+
+  const {
+    data: products,
+    isLoading: isProductLoading,
+    isSuccess: isProductSuccess,
+    isError: isProductError,
+  } = productApi.useGetAllQuery();
   const [addProduct] = productApi.useAddProductMutation();
   const [updateProduct] = productApi.useUpdateProductMutation();
   const [deleteProduct] = productApi.useDeleteTodoMutation();
@@ -33,7 +45,17 @@ const HomeScreen = (props: Props) => {
     [deleteProduct]
   );
 
-  useEffect(() => {}, [products]);
+  const handleOnboard = () => {
+    dispatch(setOnBoard(true));
+  };
+
+  const handleIsLogin = () => {
+    dispatch(setUserIsLogin(false));
+  };
+
+  useEffect(() => {
+    console.log(onBoard);
+  }, [onBoard, products]);
 
   const Item = ({ product }: any) => {
     return (
@@ -52,6 +74,9 @@ const HomeScreen = (props: Props) => {
   return (
     <ApiProvider api={productApi}>
       <SafeAreaView>
+        {isProductLoading && <Text>loading...</Text>}
+        {isProductSuccess && <Text>success</Text>}
+        {isProductError && <Text>error</Text>}
         <FlatList
           data={products}
           renderItem={({ item }) => <Item product={item} />}
@@ -61,6 +86,14 @@ const HomeScreen = (props: Props) => {
         <TouchableOpacity onPress={handleAdd}>
           <Text>add</Text>
         </TouchableOpacity>
+        <TouchableOpacity onPress={handleOnboard}>
+          <Text>toggIsOnboard</Text>
+        </TouchableOpacity>
+        <Text>is onboard? {String(onBoard)}</Text>
+        <TouchableOpacity onPress={handleIsLogin}>
+          <Text>toggle is login</Text>
+        </TouchableOpacity>
+        <Text>Is login? {String(user)}</Text>
       </SafeAreaView>
     </ApiProvider>
   );

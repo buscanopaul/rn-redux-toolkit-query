@@ -3,7 +3,7 @@ import { Data } from '../typings';
 
 export const productApi = createApi({
     reducerPath: "productApi",
-    baseQuery: fetchBaseQuery({ baseUrl: 'https://retoolapi.dev/C22wLv'}),
+    baseQuery: fetchBaseQuery({ baseUrl: 'https://retoolapi.dev/M9VzAZ'}),
     tagTypes: ['Products'],
     endpoints: (builder) => ({
         getAll: builder.query<Data[], void>({

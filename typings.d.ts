@@ -3,3 +3,7 @@ export interface Data {
     name: string;
    
 }
+
+export interface OnBoard {
+    isOnBoard: boolean
+};

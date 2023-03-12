@@ -1,13 +1,40 @@
-import { configureStore } from "@reduxjs/toolkit";
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { combineReducers, configureStore } from "@reduxjs/toolkit";
 import { setupListeners } from "@reduxjs/toolkit/dist/query";
+import {
+    FLUSH, PAUSE,
+    PERSIST, persistReducer, PURGE,
+    REGISTER, REHYDRATE
+} from "redux-persist";
 import { productApi } from "./api";
+import { onBoardReducer } from "./onBoardSlice";
+import { userReducer } from './userSlice';
 
 
-export const store = configureStore({
-    reducer: { 
-        [productApi.reducerPath]: productApi.reducer
-    },
-    middleware:(getDefaultMiddleware) => getDefaultMiddleware().concat(productApi.middleware)
+const rootReducers = combineReducers({
+    [productApi.reducerPath]: productApi.reducer,
+    onboard: onBoardReducer,
+    user: userReducer
+})
+
+const persistConfig = {
+    key: 'root',
+    storage: AsyncStorage,
+    blacklist: ['productApi','user'], //from rootReducers
+}
+
+const persistedReducer = persistReducer(persistConfig, rootReducers)
+
+const store = configureStore({
+    reducer: persistedReducer,
+    middleware: (getDefaultMiddleware) =>
+    getDefaultMiddleware({
+      serializableCheck: {
+        ignoredActions: [FLUSH, REHYDRATE, PAUSE, PERSIST, PURGE, REGISTER],
+      },
+    }).concat(productApi.middleware),
 })
 
 setupListeners(store.dispatch)
+
+export default store
