@@ -11,17 +11,23 @@ import { onBoardReducer } from "./onBoardSlice";
 import { userReducer } from './userSlice';
 
 
-const rootReducers = combineReducers({
-    [productApi.reducerPath]: productApi.reducer,
-    onboard: onBoardReducer,
-    user: userReducer
-})
-
 const persistConfig = {
     key: 'root',
     storage: AsyncStorage,
     blacklist: ['productApi','user'], //from rootReducers
 }
+
+const userPersistConfig = {
+    key: 'user',
+    storage: AsyncStorage,
+    blacklist: ['isLogin'], 
+}
+
+const rootReducers = combineReducers({
+    [productApi.reducerPath]: productApi.reducer,
+    onboard: onBoardReducer,
+    user: persistReducer(userPersistConfig, userReducer),
+})
 
 const persistedReducer = persistReducer(persistConfig, rootReducers)
 

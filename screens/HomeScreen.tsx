@@ -12,7 +12,7 @@ import {
 import { useDispatch, useSelector } from 'react-redux';
 import { productApi } from '../redux/api';
 import { setOnBoard } from '../redux/onBoardSlice';
-import { setUserIsLogin } from '../redux/userSlice';
+import { setTest, setUserIsLogin } from '../redux/userSlice';
 import { Data } from '../typings';
 
 type Props = {};
@@ -20,6 +20,7 @@ type Props = {};
 const HomeScreen = (props: Props) => {
   const onBoard = useSelector((state: any) => state.onboard.isOnBoard);
   const user = useSelector((state: any) => state.user.isLogin);
+  const test = useSelector((state: any) => state.user.test);
   const dispatch = useDispatch();
 
   const {
@@ -46,11 +47,15 @@ const HomeScreen = (props: Props) => {
   );
 
   const handleOnboard = () => {
-    dispatch(setOnBoard(true));
+    dispatch(setOnBoard(false));
   };
 
   const handleIsLogin = () => {
     dispatch(setUserIsLogin(false));
+  };
+
+  const handleTest = () => {
+    dispatch(setTest(false));
   };
 
   useEffect(() => {
@@ -94,6 +99,10 @@ const HomeScreen = (props: Props) => {
           <Text>toggle is login</Text>
         </TouchableOpacity>
         <Text>Is login? {String(user)}</Text>
+        <TouchableOpacity onPress={handleTest}>
+          <Text>test</Text>
+        </TouchableOpacity>
+        <Text>test? {String(test)}</Text>
       </SafeAreaView>
     </ApiProvider>
   );
